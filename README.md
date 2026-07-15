@@ -132,3 +132,7 @@ scripts/              # Key generation helper
 ## License
 
 ISC
+
+## curl http://localhost:4000/health
+## curl -X POST http://localhost:4000/ingest
+

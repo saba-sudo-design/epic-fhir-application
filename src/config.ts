@@ -14,6 +14,12 @@ function optional(name: string, fallback: string): string {
   return process.env[name] ?? fallback;
 }
 
+function optionalBool(name: string, fallback: boolean): boolean {
+  const value = process.env[name];
+  if (value === undefined) return fallback;
+  return value === 'true' || value === '1';
+}
+
 export const config = {
   port: Number(optional('PORT', '4000')),
   databaseUrl: optional(
@@ -40,6 +46,7 @@ export const config = {
     requestTimeoutMs: Number(optional('EPIC_REQUEST_TIMEOUT_MS', '30000')),
     maxRetries: Number(optional('EPIC_MAX_RETRIES', '3')),
     retryDelayMs: Number(optional('EPIC_RETRY_DELAY_MS', '1000')),
+    logFullAccessToken: optionalBool('EPIC_LOG_FULL_ACCESS_TOKEN', false),
     testPatientIds: optional(
       'EPIC_TEST_PATIENT_IDS',
       'eq081-VQEgP8drUUqCWzHfw3,eIXesllypH3M9tAA5WdJftQ3'

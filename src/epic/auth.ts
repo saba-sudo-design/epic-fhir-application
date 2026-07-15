@@ -5,6 +5,11 @@ import { assertEpicConfigured, config } from '../config';
 import { logger } from '../utils/logger';
 import { TokenResponse } from './types';
 
+function maskAccessToken(token: string): string {
+  if (token.length <= 20) return '***';
+  return `${token.slice(0, 12)}...${token.slice(-8)}`;
+}
+
 function loadPrivateKey(): string {
   if (config.epic.privateKey) {
     return config.epic.privateKey.replace(/\\n/g, '\n');
@@ -60,6 +65,11 @@ export async function getAccessToken(): Promise<string> {
   }
 
   const data = JSON.parse(text) as TokenResponse;
-  logger.info('Epic access token obtained', { expiresIn: data.expires_in });
+  logger.info('Epic access token obtained', {
+    expiresIn: data.expires_in,
+    tokenType: data.token_type,
+    accessTokenPreview: maskAccessToken(data.access_token),
+    ...(config.epic.logFullAccessToken ? { accessToken: data.access_token } : {}),
+  });
   return data.access_token;
 }
